@@ -3,7 +3,7 @@ pipeline {
    agent any
 
      stages {
-       stage('build') {
+       stage('Build') {
          stage {
            sh 'ant -f build.xml'
            }
