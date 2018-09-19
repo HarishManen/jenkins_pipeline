@@ -3,15 +3,15 @@ pipeline {
    agent any
 
      stages {
-       stage ('Build') {
-         steps {
-           sh 'ant -f build.xml'
-           }
-         }
        stage ('unit Test') {
          steps {
            sh 'ant -f test.xml'
            junit 'reports/results.xml'
+           }
+         }
+       stage ('Build') {
+         steps {
+           sh 'ant -f build.xml'
           }
        }
     }
