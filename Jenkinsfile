@@ -10,9 +10,6 @@ pipeline  {
      }
 
     stage('build') {
-     agent {
-       label 'apache'
-      }
   
      steps {
        sh 'ant -f build.xml'
@@ -25,9 +22,6 @@ pipeline  {
     }
 
     stage('deploy') {
-      agent {
-       label 'apache'
-      }
     
       steps {
       sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/" 
@@ -36,7 +30,7 @@ pipeline  {
    stage("Running on centos") {
       steps {
 
-        sh "wget http://<hostname>/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
+        sh "wget http://jenkinsmaster/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
         sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 4"
         }
       }
