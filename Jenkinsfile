@@ -14,11 +14,6 @@ pipeline  {
      steps {
        sh 'ant -f build.xml'
        }
-    post {
-     success {
-        archiveArtifacts artifacts:'dist/*.jar', fingerprint: true
-        }
-      }
     }
 
     stage('deploy') {
@@ -35,4 +30,10 @@ pipeline  {
         }
       }
      }
+ post {
+     success {
+        archiveArtifacts artifacts:'dist/*.jar', fingerprint: true
+        }
+      }
+
    }
