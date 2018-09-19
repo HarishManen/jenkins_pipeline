@@ -1,29 +1,44 @@
-pipeline {
-
+pipeline  {
    agent any
-
-     stages {
-       stage ('unit Test') {
-         steps {
-           sh 'ant -f test.xml'
-           }
-         }
-       stage ('Build') {
-         steps {
-           sh 'ant -f build.xml'
-          }
+    
+  stages {
+     
+     stage('unit Tests') {
+      steps {
+        sh 'ant -f test.xml'
        }
- stage('deploy') {
+     }
 
+    stage('build') {
+     agent {
+       label 'apache'
+      }
+  
+     steps {
+       sh 'ant -f build.xml'
+       }
+    post {
+     success {
+        archiveArtifacts artifacts:'dist/*.jar', fingerprint: true
+        }
+      }
+    }
+
+    stage('deploy') {
+      agent {
+       label 'apache'
+      }
+    
+      steps {
+      sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/" 
+     }
+   }
+   stage("Running on centos") {
       steps {
 
-      sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/"
-    }
-  }
-}
-   post {
-         always {
-          archiveArtifacts artifacts: 'dist/*.jar', fingerprint: true
-          }
+        sh "wget http://<hostname>/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
+        sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 4"
         }
-}
+      }
+     }
+   }
